@@ -15,4 +15,8 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\VetProManager.Service\VetProManager.Service.csproj" />
+  </ItemGroup>
+
 </Project>

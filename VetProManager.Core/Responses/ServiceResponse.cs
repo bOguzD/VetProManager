@@ -1,4 +1,4 @@
-﻿namespace VetProManager.DAL.Responses {
+﻿namespace VetProManager.Core.Responses {
     public class ServiceResponse {
         public bool IsSuccess { get; set; }
         public string? Message { get; set; }
@@ -27,7 +27,7 @@
 
         private static string CreateErrorMessage(string? message) {
             return string.IsNullOrEmpty(message)
-                ? "Bilinmeyen Hata"
+                ? "Unknown Error"
                 : message;
         }
 

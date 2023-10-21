@@ -26,7 +26,6 @@ namespace VetProManager.DAL.Repositories {
             return await _dbSet.AnyAsync(predicate);
         }
 
-        [Obsolete("Async ve unitofwork olduğu için return e bakmak lazım")]
         public void Delete(TEntity entity) {
             _dbSet.Remove(entity);
         }
@@ -47,7 +46,6 @@ namespace VetProManager.DAL.Repositories {
             return await _dbSet.FindAsync(Id);
         }
 
-        [Obsolete("Async ve unitofwork olduğu için return e bakmak lazım")]
         public void Update(TEntity entity) {
             _context.Entry(entity).State = EntityState.Modified;
             _dbSet.Update(entity);
