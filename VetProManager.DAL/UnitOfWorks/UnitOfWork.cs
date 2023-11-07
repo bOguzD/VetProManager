@@ -12,8 +12,18 @@ namespace VetProManager.DAL.UnitOfWorks {
         }
 
         public async Task CommitAsync() {
-            await _context.SaveChangesAsync();
-            await _transaction.CommitAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+                await _transaction.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                await _transaction.RollbackAsync();
+                //TODO: hata global hale getirilmeli.
+                throw new Exception("Bir hata oluştu: " + ex.Message);
+            }
+           
         }
 
         public async Task RollbackAsync() {
