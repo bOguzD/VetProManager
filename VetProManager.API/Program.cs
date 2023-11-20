@@ -1,5 +1,8 @@
+using FluentValidation;
 using VetProManager.Service.Contract.Modules;
+using VetProManager.Service.DTOs;
 using VetProManager.Service.Modules.CRM;
+using VetProManager.Service.Validations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +12,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+
+//FluentValidation
+builder.Services.AddScoped<IValidator<SpeciesDTO>, SpeciesValidator>();
+
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 
