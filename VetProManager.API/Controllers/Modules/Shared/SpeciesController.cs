@@ -6,6 +6,7 @@ namespace VetProManager.API.Controllers.Modules.Shared {
     [ApiController]
     [Route("api/species")]
     public class SpeciesController : ControllerBase {
+
         private readonly SpeciesService _speciesService;
 
         public SpeciesController(SpeciesService speciesService) {
