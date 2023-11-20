@@ -1,6 +1,6 @@
-using VetProManager.DAL.Contracts.Modules.CRM;
-using VetProManager.DAL.Repositories.Modules.CRM;
 using VetProManager.DAL.UnitOfWorks;
+using VetProManager.Service.Contract.Modules;
+using VetProManager.Service.Modules.CRM;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 var app = builder.Build();
 
