@@ -16,8 +16,7 @@
 
         public static ServiceResponse Failure(int statusCode, string? message) {
             message = CreateErrorMessage(message);
-            List<string> error = new();
-            error.Add(message);
+            var error = new List<string> { message };
             return CreateServiceResponse(false, message, statusCode, null, error);
         }
 
