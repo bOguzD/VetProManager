@@ -1,5 +1,5 @@
 using FluentValidation;
-using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
 using VetProManager.DAL.Context;
 using VetProManager.DAL.UnitOfWorks;
 using VetProManager.Service.Contract.Modules.CRM;
@@ -15,7 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<VetProManagerContext>(options =>
-    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
