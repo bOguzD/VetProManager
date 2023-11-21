@@ -1,6 +1,6 @@
 ﻿
 namespace VetProManager.DAL.Base {
-    public class TenantEntity {
+    public class TenantEntity : BaseEntity {
         public long TenantId { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using VetProManager.DAL.Base;
 using VetProManager.DAL.Modules.AppointmentManager;
 using VetProManager.DAL.Modules.CRM;
 using VetProManager.DAL.Modules.PetManager;
@@ -17,6 +18,11 @@ namespace VetProManager.DAL.Context {
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //foreach (var entityType in modelBuilder.Model.GetEntityTypes()) {
+            //    if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType)) {
+            //        modelBuilder.Entity(entityType.ClrType).HasKey("Id");
+            //    }
+            //}
             base.OnModelCreating(modelBuilder);
         }
 
