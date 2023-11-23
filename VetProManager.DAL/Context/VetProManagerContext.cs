@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using VetProManager.Core.Base;
 using VetProManager.DAL.Modules.AppointmentManager;
 using VetProManager.DAL.Modules.CRM;
 using VetProManager.DAL.Modules.PetManager;
@@ -12,16 +13,20 @@ namespace VetProManager.DAL.Context {
         public VetProManagerContext(DbContextOptions<VetProManagerContext> options) : base(options) { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
+
+            if (!optionsBuilder.IsConfigured) {
+                optionsBuilder.UseSqlServer(
+                    "Data Source=.;Initial Catalog=VetProManager;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
+            }
             base.OnConfiguring(optionsBuilder);
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            //foreach (var entityType in modelBuilder.Model.GetEntityTypes()) {
-            //    if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType)) {
-            //        modelBuilder.Entity(entityType.ClrType).HasKey("Id");
-            //    }
-            //}
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes()) {
+                if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType)) {
+                    modelBuilder.Entity(entityType.ClrType).HasKey("Id");
+                }
+            }
             base.OnModelCreating(modelBuilder);
         }
 
@@ -33,7 +38,7 @@ namespace VetProManager.DAL.Context {
         public DbSet<Pet> Pets { get; set; }
         public DbSet<PetDetailHistory> PetsDetailHistories { get; set; }
         public DbSet<PetOwner> PetsOwners { get; set; }
-        public DbSet<PetVaccination> PetsVaccinations { get; set;}
+        public DbSet<PetVaccination> PetsVaccinations { get; set; }
         public DbSet<Breed> Breeds { get; set; }
         public DbSet<Clinic> Clinics { get; set; }
         public DbSet<Species> Species { get; set; }
@@ -42,7 +47,7 @@ namespace VetProManager.DAL.Context {
         public DbSet<Vaccine> Vaccines { get; set; }
         public DbSet<Expertness> Expertnesses { get; set; }
         public DbSet<Vet> Vets { get; set; }
-        public DbSet<VetClinic> VetClinics { get; set;}
+        public DbSet<VetClinic> VetClinics { get; set; }
 
     }
 }
