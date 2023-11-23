@@ -1,17 +1,21 @@
 ﻿using System.Linq.Expressions;
+using VetProManager.Core.Base;
 using VetProManager.DAL.Contracts.BaseContracts;
 using VetProManager.DAL.UnitOfWorks;
 using VetProManager.Service.BaseService.Contract;
+using VetProManager.Service.ContextUser;
 
 namespace VetProManager.Service.BaseService {
     public class Service<T> : IService<T> where T : class {
 
         private readonly IRepository<T> _repository;
         private readonly IUnitOfWork _unitOfWork;
+       // private readonly IUserContext _contextUser;
 
-        public Service(IUnitOfWork unitOfWork, IRepository<T> repository) {
+        public Service(IUnitOfWork unitOfWork, IRepository<T> repository/*, IUserContext contextUser*/) {
             _unitOfWork = unitOfWork;
             _repository = repository;
+            //_contextUser = contextUser;
         }
 
         public async Task<T?> GetByIdAsync(int Id) {
@@ -31,6 +35,10 @@ namespace VetProManager.Service.BaseService {
         }
 
         public async Task AddAsync(T entity) {
+            if (entity is TenantEntity tenantEntity) {
+               // tenantEntity.TenantId = _contextUser.GetCurrentTenantId();
+            }
+
             await _repository.AddAsync(entity);
             _unitOfWork.SaveChanges();
         }
