@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace VetProManager.DAL.Base {
+namespace VetProManager.Core.Base {
     public class BaseEntity {
 
         public long Id { get; set; }

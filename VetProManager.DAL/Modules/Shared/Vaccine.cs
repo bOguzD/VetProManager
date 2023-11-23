@@ -1,4 +1,4 @@
-﻿using VetProManager.DAL.Base;
+﻿using VetProManager.Core.Base;
 
 namespace VetProManager.DAL.Modules.Shared {
     public class Vaccine : BaseEntity {

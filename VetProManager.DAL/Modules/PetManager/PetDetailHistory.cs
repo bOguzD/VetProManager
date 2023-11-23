@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VetProManager.DAL.Base;
+﻿using VetProManager.Core.Base;
 
 namespace VetProManager.DAL.Modules.PetManager {
     public class PetDetailHistory : TenantEntity{

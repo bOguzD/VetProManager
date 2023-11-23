@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using VetProManager.DAL.Base;
 using VetProManager.DAL.Modules.AppointmentManager;
 using VetProManager.DAL.Modules.CRM;
 using VetProManager.DAL.Modules.PetManager;

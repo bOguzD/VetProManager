@@ -1,4 +1,4 @@
-﻿using VetProManager.DAL.Base;
+﻿using VetProManager.Core.Base;
 using VetProManager.DAL.Modules.PetManager;
 using VetProManager.DAL.Modules.VetManager;
 
