@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using Serilog.Events;
 using VetProManager.DAL;
 using VetProManager.Service.Modules.CRM;
 using VetProManager.Service.Modules.Shared;
@@ -13,6 +14,7 @@ namespace VetProManager.Service {
 
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+                .WriteTo.Seq("http://localhost:5341", LogEventLevel.Verbose)
                 .CreateLogger();
 
             //FluentValidation

@@ -14,12 +14,29 @@ namespace VetProManager.API.Controllers.Modules.Shared {
             _speciesService = speciesService;
         }
 
+        [HttpGet("{Id}")]
+        public async Task<IActionResult> GetById(long Id) {
+            var response = new ServiceResponse() {
+                Data = await _speciesService.GetByIdAsync(Id)
+            };
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAsync() {
+            var response = new ServiceResponse {
+                Data = await _speciesService.GetAllAsync()
+            };
+
+            return Ok(response);
+        }
+
         [HttpPost]
-        public IActionResult InsertSpecies([FromBody] SpeciesDTO dto)
-        {
+        public IActionResult InsertSpecies([FromBody] SpeciesDTO dto) {
             var response = new ServiceResponse();
             _speciesService.AddAsync(dto);
-            
+
             return Ok(response);
 
         }

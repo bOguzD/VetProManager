@@ -42,7 +42,7 @@ namespace VetProManager.DAL.Repositories {
             return await _dbSet.ToListAsync();
         }
 
-        public async Task<TEntity?> GetByIdAsync(int Id) {
+        public async Task<TEntity?> GetByIdAsync(long Id) {
             return await _dbSet.FindAsync(Id);
         }
 

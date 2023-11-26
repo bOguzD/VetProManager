@@ -1,5 +1,9 @@
 ﻿namespace VetProManager.Service.Responses {
     public class ServiceResponse {
+        public ServiceResponse() {
+            Errors = new List<string>();
+        }
+
         public bool IsSuccess { get; set; }
         public string? Message { get; set; }
         public int StatusCode { get; set; }

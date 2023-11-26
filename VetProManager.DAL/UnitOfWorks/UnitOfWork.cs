@@ -46,7 +46,29 @@ namespace VetProManager.DAL.UnitOfWorks {
         }
 
         public void Dispose() {
-            _transaction.Dispose();
+
+            //try {
+            //    // Eğer _transaction ve _context null değilse, dispose işlemlerini gerçekleştir
+            //    _transaction?.Dispose();
+
+            //    if (_context != null) {
+            //        // Eğer _context üzerinde açık bir veri okuyucusu varsa, kapat
+            //        if (_context.Database.CurrentTransaction != null) {
+            //            if (_context.Database.CurrentTransaction.GetDbTransaction().Connection != null) {
+            //                if (_context.Database.CurrentTransaction.GetDbTransaction().Connection.State == System.Data.ConnectionState.Open) {
+            //                    _context.Database.CurrentTransaction.GetDbTransaction().Connection.Close();
+            //                }
+            //            }
+            //        }
+
+            //        _context.Dispose();
+            //    }
+            //}
+            //catch (Exception ex) {
+            //    Console.WriteLine("Dispose işlemi sırasında hata oluştu: " + ex.Message);
+            //}
+
+            _transaction?.Dispose();
             _context.Dispose();
         }
     }

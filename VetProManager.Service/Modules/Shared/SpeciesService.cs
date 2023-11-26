@@ -19,7 +19,8 @@ namespace VetProManager.Service.Modules.Shared {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRepository<Species> _repository;
         private readonly ILogger _logger;
-        public SpeciesService(IUnitOfWork unitOfWork, IRepository<Species> repository, IMapper mapper, SpeciesValidator validator, ILogger logger) : base(unitOfWork, repository) {
+
+        public SpeciesService(IUnitOfWork unitOfWork, IRepository<Species> repository, ILogger logger, IMapper mapper, SpeciesValidator validator) : base(unitOfWork, repository, logger) {
             _unitOfWork = unitOfWork;
             _repository = repository;
             _mapper = mapper;
@@ -27,14 +28,37 @@ namespace VetProManager.Service.Modules.Shared {
             _logger = logger;
         }
 
-        public async Task<SpeciesDTO?> GetByIdAsync(int Id)
+        public async Task<SpeciesDTO?> GetByIdAsync(long id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var species = await _repository.GetByIdAsync(id);
+                var speciesDTO = _mapper.Map<SpeciesDTO>(species);
+
+                _logger.Information("Tür bilgisi alındı. {0}", speciesDTO.Code);
+
+                return speciesDTO;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message);
+                throw ex;
+            }
+
         }
 
         public async Task<IEnumerable<SpeciesDTO>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var speciesList = await _repository.GetAllAsync();
+
+            var speciesListDTO = new List<SpeciesDTO>();
+            if (speciesList.Any()) {
+                speciesListDTO = _mapper.Map<IEnumerable<SpeciesDTO>>(speciesList).ToList();
+            }
+
+            _logger.Information("Tür bilgileri çekildi.");
+
+            return speciesListDTO;
         }
 
         public IQueryable<SpeciesDTO> GetAllAsQueryable()
@@ -67,6 +91,7 @@ namespace VetProManager.Service.Modules.Shared {
             }
             catch (Exception ex)
             {
+                _logger.Error("Hata Mesajı: {0}", ex.Message);
                 response.Errors.Add(ex.Message);
                 response.IsSuccess = false;
             }

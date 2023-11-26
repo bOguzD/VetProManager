@@ -1,5 +1,7 @@
 ﻿using System.Linq.Expressions;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Serilog;
 using VetProManager.Core.Base;
 using VetProManager.DAL.Contracts.BaseContracts;
 using VetProManager.DAL.UnitOfWorks;
@@ -10,17 +12,19 @@ namespace VetProManager.Service.BaseService {
 
         private readonly IRepository<T> _repository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger _logger;
 
         private readonly IValidator _validator;
        // private readonly IUserContext _contextUser;
 
-        public Service(IUnitOfWork unitOfWork, IRepository<T> repository/*, IUserContext contextUser*/) {
+        public Service(IUnitOfWork unitOfWork, IRepository<T> repository, ILogger logger) {
             _unitOfWork = unitOfWork;
             _repository = repository;
+            _logger = logger;
             //_contextUser = contextUser;
         }
 
-        public async Task<T?> GetByIdAsync(int Id) {
+        public async Task<T?> GetByIdAsync(long Id) {
             return await _repository.GetByIdAsync(Id);
         }
 
@@ -37,14 +41,19 @@ namespace VetProManager.Service.BaseService {
         }
 
         public async Task AddAsync(T entity) {
+            try
+            {
+                if (entity is TenantEntity tenantEntity) {
+                    // tenantEntity.TenantId = _contextUser.GetCurrentTenantId();
+                }
 
-            if (entity is TenantEntity tenantEntity) {
-               // tenantEntity.TenantId = _contextUser.GetCurrentTenantId();
+                await _repository.AddAsync(entity);
+                _unitOfWork.SaveChanges();
             }
-
-            await _repository.AddAsync(entity);
-            _unitOfWork.SaveChanges();
-
+            catch (Exception ex)
+            {
+                _logger.Error("Hata Mesajı: {0}", ex.Message);
+            }
         }
 
         public async Task AddRangeAsync(IEnumerable<T> entities) {
