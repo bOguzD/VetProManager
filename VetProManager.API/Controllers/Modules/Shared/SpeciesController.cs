@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using VetProManager.Service.DTOs;
 using VetProManager.Service.Modules.Shared;
+using VetProManager.Service.Responses;
 
 namespace VetProManager.API.Controllers.Modules.Shared {
     [ApiController]
@@ -16,9 +17,10 @@ namespace VetProManager.API.Controllers.Modules.Shared {
         [HttpPost]
         public IActionResult InsertSpecies([FromBody] SpeciesDTO dto)
         {
+            var response = new ServiceResponse();
             _speciesService.AddAsync(dto);
-
-            return Ok();
+            
+            return Ok(response);
 
         }
     }

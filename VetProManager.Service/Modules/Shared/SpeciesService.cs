@@ -7,6 +7,7 @@ using VetProManager.DAL.UnitOfWorks;
 using VetProManager.Service.BaseService;
 using VetProManager.Service.Contract.Modules.Shared;
 using VetProManager.Service.DTOs;
+using VetProManager.Service.Responses;
 using VetProManager.Service.Validations;
 
 namespace VetProManager.Service.Modules.Shared {
@@ -45,16 +46,28 @@ namespace VetProManager.Service.Modules.Shared {
 
         public async Task AddAsync(SpeciesDTO entity)
         {
-            var validationResult = _validator.Validate(entity);
+            //TODO: response yapısı generic olarak her yerde gösterilecek
+            var response = new ServiceResponse();
+            try
+            {
+                var validationResult = _validator.Validate(entity);
 
-            if (!validationResult.IsValid) {
-                throw new ValidationException(validationResult.Errors);
+                if (!validationResult.IsValid) 
+                    throw new ValidationException(validationResult.Errors);
+                
+
+                var speciesEntity = _mapper.Map<Species>(entity);
+
+                await _repository.AddAsync(speciesEntity);
+                _unitOfWork.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                response.Errors.Add(ex.Message);
+                response.IsSuccess = false;
             }
 
-            var speciesEntity = _mapper.Map<Species>(entity);
-
-            await _repository.AddAsync(speciesEntity);
-            _unitOfWork.SaveChanges();
+           // return response;
         }
 
         public async Task AddRangeAsync(IEnumerable<SpeciesDTO> entities)

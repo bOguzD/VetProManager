@@ -6,7 +6,7 @@ namespace VetProManager.Service.Mapper {
     public class AutoMapper : Profile {
         public AutoMapper()
         {
-            CreateMap<Species, SpeciesDTO>();
+            CreateMap<Species, SpeciesDTO>().ReverseMap();
         }
     }
 }
