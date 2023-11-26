@@ -22,6 +22,8 @@ namespace VetProManager.Service {
             services.AddScoped<CustomerService>();
             services.AddScoped<SpeciesService>();
 
+            services.AddSingleton(provider => Log.Logger);
+
 
             //DAL katmanının dependencyleri
             services.RegisterDalDependencies(configuration);

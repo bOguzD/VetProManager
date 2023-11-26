@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
 using FluentValidation;
+using Serilog;
 using VetProManager.DAL.Contracts.BaseContracts;
 using VetProManager.DAL.Modules.Shared;
 using VetProManager.DAL.UnitOfWorks;
@@ -17,11 +18,13 @@ namespace VetProManager.Service.Modules.Shared {
         private readonly SpeciesValidator _validator;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRepository<Species> _repository;
-        public SpeciesService(IUnitOfWork unitOfWork, IRepository<Species> repository, IMapper mapper, SpeciesValidator validator) : base(unitOfWork, repository) {
+        private readonly ILogger _logger;
+        public SpeciesService(IUnitOfWork unitOfWork, IRepository<Species> repository, IMapper mapper, SpeciesValidator validator, ILogger logger) : base(unitOfWork, repository) {
             _unitOfWork = unitOfWork;
             _repository = repository;
             _mapper = mapper;
             _validator = validator;
+            _logger = logger;
         }
 
         public async Task<SpeciesDTO?> GetByIdAsync(int Id)
@@ -60,6 +63,7 @@ namespace VetProManager.Service.Modules.Shared {
 
                 await _repository.AddAsync(speciesEntity);
                 _unitOfWork.SaveChanges();
+                _logger.Information("Kayıt başarılı. {0}", entity.Name);
             }
             catch (Exception ex)
             {

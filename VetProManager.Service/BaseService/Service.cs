@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using FluentValidation;
 using VetProManager.Core.Base;
 using VetProManager.DAL.Contracts.BaseContracts;
 using VetProManager.DAL.UnitOfWorks;
@@ -9,6 +10,8 @@ namespace VetProManager.Service.BaseService {
 
         private readonly IRepository<T> _repository;
         private readonly IUnitOfWork _unitOfWork;
+
+        private readonly IValidator _validator;
        // private readonly IUserContext _contextUser;
 
         public Service(IUnitOfWork unitOfWork, IRepository<T> repository/*, IUserContext contextUser*/) {
