@@ -22,9 +22,18 @@ namespace VetProManager.DAL.Context {
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
+
+            modelBuilder.Entity<PetDetailHistory>()
+                .Property(p => p.Weight)
+                .HasColumnType("decimal(18,2)");
+
             foreach (var entityType in modelBuilder.Model.GetEntityTypes()) {
                 if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType)) {
                     modelBuilder.Entity(entityType.ClrType).HasKey("Id");
+                }
+
+                foreach (var foreignKey in entityType.GetForeignKeys()) {
+                    foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
                 }
             }
             base.OnModelCreating(modelBuilder);
