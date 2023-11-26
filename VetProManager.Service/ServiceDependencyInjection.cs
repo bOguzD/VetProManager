@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 using VetProManager.DAL;
 using VetProManager.Service.Modules.CRM;
 using VetProManager.Service.Modules.Shared;
@@ -10,6 +11,9 @@ namespace VetProManager.Service {
         public static void RegisterServiceDependencies(this IServiceCollection services,
             IConfiguration configuration) {
 
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
 
             //FluentValidation
             services.AddScoped<SpeciesValidator>();

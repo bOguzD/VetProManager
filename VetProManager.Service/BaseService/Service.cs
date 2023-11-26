@@ -3,7 +3,6 @@ using VetProManager.Core.Base;
 using VetProManager.DAL.Contracts.BaseContracts;
 using VetProManager.DAL.UnitOfWorks;
 using VetProManager.Service.BaseService.Contract;
-using VetProManager.Service.ContextUser;
 
 namespace VetProManager.Service.BaseService {
     public class Service<T> : IService<T> where T : class {
@@ -35,12 +34,14 @@ namespace VetProManager.Service.BaseService {
         }
 
         public async Task AddAsync(T entity) {
+
             if (entity is TenantEntity tenantEntity) {
                // tenantEntity.TenantId = _contextUser.GetCurrentTenantId();
             }
 
             await _repository.AddAsync(entity);
             _unitOfWork.SaveChanges();
+
         }
 
         public async Task AddRangeAsync(IEnumerable<T> entities) {
