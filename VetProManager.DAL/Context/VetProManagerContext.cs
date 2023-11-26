@@ -27,10 +27,22 @@ namespace VetProManager.DAL.Context {
                 .Property(p => p.Weight)
                 .HasColumnType("decimal(18,2)");
 
+            modelBuilder.Entity<TenantEntity>().HasIndex(x => x.TenantId);
+
+
             foreach (var entityType in modelBuilder.Model.GetEntityTypes()) {
                 if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType)) {
                     modelBuilder.Entity(entityType.ClrType).HasKey("Id");
                 }
+
+                if (typeof(TenantEntity).IsAssignableFrom(entityType.ClrType))
+                {
+                    var method = typeof(VetProManagerContext).GetMethod(nameof(ApplyTenantFilterForEntityType))
+                        .MakeGenericMethod(entityType.ClrType);
+
+                    method.Invoke(this, new object[] { modelBuilder });
+                }
+
 
                 foreach (var foreignKey in entityType.GetForeignKeys()) {
                     foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
@@ -38,6 +50,13 @@ namespace VetProManager.DAL.Context {
             }
             base.OnModelCreating(modelBuilder);
         }
+
+        private void ApplyTenantFilterForEntityType<TEntity>(ModelBuilder modelBuilder) where TEntity : TenantEntity
+        {
+            modelBuilder.Entity<TEntity>()
+                .HasQueryFilter(entity => EF.Property<int>(entity, "TenantId") == 1); //TODO:GetCurrentUserId
+        }
+
 
 
 
