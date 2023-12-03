@@ -5,6 +5,7 @@ using VetProManager.DAL.Context;
 using VetProManager.DAL.Contracts.BaseContracts;
 using VetProManager.DAL.Contracts.Modules.CRM;
 using VetProManager.DAL.Contracts.Modules.Security;
+using VetProManager.DAL.Modules.Security;
 using VetProManager.DAL.Modules.Shared;
 using VetProManager.DAL.Repositories.Modules.CRM;
 using VetProManager.DAL.Repositories.Modules.Security;
@@ -26,6 +27,7 @@ namespace VetProManager.DAL {
             services.AddScoped<IRepository<Species>, SpeciesRepository>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRepository<User>,  UserRepository>();
         }
     }
 }

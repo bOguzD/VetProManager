@@ -15,9 +15,9 @@ namespace VetProManager.API.Controllers.Modules.Shared {
         }
 
         [HttpGet("{Id}")]
-        public async Task<IActionResult> GetById(long Id) {
+        public async Task<IActionResult> GetById(long id) {
             var response = new ServiceResponse() {
-                Data = await _speciesService.GetByIdAsync(Id)
+                Data = await _speciesService.GetByIdAsync(id)
             };
 
             return Ok(response);

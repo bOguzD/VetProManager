@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Events;
 using VetProManager.DAL;
+using VetProManager.Service.Contract.Modules.Security;
 using VetProManager.Service.Modules.CRM;
 using VetProManager.Service.Modules.Security;
 using VetProManager.Service.Modules.Shared;
