@@ -1,13 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using VetProManager.Core.Base;
 using VetProManager.DAL.Modules.AppointmentManager;
 using VetProManager.DAL.Modules.CRM;
 using VetProManager.DAL.Modules.PetManager;
+using VetProManager.DAL.Modules.Security;
 using VetProManager.DAL.Modules.Shared;
 using VetProManager.DAL.Modules.VetManager;
 
 namespace VetProManager.DAL.Context {
-    public class VetProManagerContext : DbContext {
+    public class VetProManagerContext : IdentityDbContext<User> {
         public VetProManagerContext() { }
 
         public VetProManagerContext(DbContextOptions<VetProManagerContext> options) : base(options) { }
@@ -59,7 +61,7 @@ namespace VetProManager.DAL.Context {
 
 
 
-
+        public DbSet<User> Users { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Examination> Examinations { get; set; }
         public DbSet<Customer> Customers { get; set; }

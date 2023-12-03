@@ -1,5 +1,6 @@
 ﻿using VetProManager.DAL.Contracts.BaseContracts;
 using VetProManager.DAL.Contracts.Modules.CRM;
+using VetProManager.DAL.Contracts.Modules.Security;
 
 namespace VetProManager.DAL.UnitOfWorks
 {
@@ -11,6 +12,5 @@ namespace VetProManager.DAL.UnitOfWorks
         void Rollback();
         IRepository<TEntity> GetRepository<TEntity>() where TEntity : class;
         ICustomerRepository Customers { get; set; }
-        
     }
 }
