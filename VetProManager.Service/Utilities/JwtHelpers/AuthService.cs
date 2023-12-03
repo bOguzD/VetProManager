@@ -6,18 +6,22 @@ using System.Threading.Tasks;
 using VetProManager.Service.Contract.Modules.Security;
 using VetProManager.Service.Utilities.Contract;
 
-namespace VetProManager.Service.Utilities {
-    public class AuthService : IAuthService {
+namespace VetProManager.Service.Utilities.JwtHelpers
+{
+    public class AuthService : IAuthService
+    {
 
         private readonly IUserService _userService;
         private readonly IJwtService _jwtService;
 
-        public AuthService(IUserService userService, IJwtService jwtService) {
+        public AuthService(IUserService userService, IJwtService jwtService)
+        {
             _userService = userService;
             _jwtService = jwtService;
         }
 
-        public string Authenticate(string userName, string password) {
+        public string Authenticate(string userName, string password)
+        {
             // Kullanıcı doğrulama işlemleri burada gerçekleştirilir
 
             // Kullanıcı bilgileri doğruysa token oluştur
