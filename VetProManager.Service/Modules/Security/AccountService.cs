@@ -7,6 +7,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Xml;
+using Microsoft.Identity.Client;
 using VetProManager.DAL.Contracts.BaseContracts;
 using VetProManager.DAL.Modules.Security;
 using VetProManager.DAL.UnitOfWorks;
@@ -16,45 +18,57 @@ using VetProManager.Service.Contract.Modules.Security;
 using VetProManager.Service.DTOs;
 using VetProManager.Service.Responses;
 using VetProManager.Service.Validations;
+using Microsoft.AspNetCore.Identity;
 
 namespace VetProManager.Service.Modules.Security {
     public class AccountService : Service<AuthToken>, IAccountService {
-        
+
         private readonly IRepository<AuthToken> _repository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
         private readonly AuthTokenValidator _validator;
+        private readonly IUserService _userService;
 
         public AccountService(IUnitOfWork unitOfWork, IRepository<AuthToken> repository,
-            ILogger logger, IMapper mapper, AuthTokenValidator validator) : base(unitOfWork, repository, logger)
-        {
+            ILogger logger, IMapper mapper, AuthTokenValidator validator, IUserService service) : base(unitOfWork, repository, logger) {
             _unitOfWork = unitOfWork;
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
             _validator = validator;
+            _userService = service;
         }
 
         public async Task<ServiceResponse> RegisterAsync(AuthTokenDto dto) {
             var response = new ServiceResponse();
 
-            try {
-                CreatePasswordHash(dto.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            var validationResult = await _validator.ValidateAsync(dto);
 
-                var user = _mapper.Map<User>(dto);
-
-                user.PasswordHash = passwordHash;
-                user.PasswordSalt = passwordSalt;
-
-
-
-                await _unitOfWork.CommitAsync();
+            if (!validationResult.IsValid) {
+                _logger.Error("Validasyon hatası. {0}", validationResult.Errors);
+                //TODO: throw yapılmadan olacak
+                response.Errors.Add(validationResult.Errors.ToString());
+                throw new ValidationException(validationResult.Errors);
             }
-            catch (Exception ex) {
-                response.Errors.Add(ex.Message);
-            }
+
+            CreatePasswordHash(dto.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            var userDto = new UserDto()
+            {
+                Email = dto.Email,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt
+            };
+
+            dto.Token = GenerateToken(dto);
+            var authToken = _mapper.Map<AuthToken>(dto);
+
+            await _repository.AddAsync(authToken);
+            await _userService.AddAsync(userDto);
+
+            await _unitOfWork.CommitAsync();
 
             return response;
         }
@@ -63,26 +77,21 @@ namespace VetProManager.Service.Modules.Security {
         public async Task<ServiceResponse> LoginAsync(AuthTokenDto dto) {
             var response = new ServiceResponse();
 
-            try {
-                var validationResult = await _validator.ValidateAsync(dto);
 
-                if (!validationResult.IsValid) {
-                    _logger.Error("Validasyon hatası. {0}", validationResult.Errors);
-                    //TODO: throw yapılmadan olacak
-                    response.Errors.Add(validationResult.Errors.ToString());
-                    throw new ValidationException(validationResult.Errors);
-                }
+            var validationResult = await _validator.ValidateAsync(dto);
 
-                var user = _repository.Where(x => x.User.Email == dto.Email);
-
-                if (user == null) {
-                    _logger.Error("Kullanıcı bulunamadı: {0}", dto.Email);
-                    response.Errors.Add("Kullanıcı bulunamadı");
-                }
-
+            if (!validationResult.IsValid) {
+                _logger.Error("Validasyon hatası. {0}", validationResult.Errors);
+                //TODO: throw yapılmadan olacak
+                response.Errors.Add(validationResult.Errors.ToString());
+                throw new ValidationException(validationResult.Errors);
             }
-            catch (Exception ex) {
-                response.Errors.Add(ex.Message);
+
+            var user = _repository.Where(x => x.User.Email == dto.Email);
+
+            if (user == null) {
+                _logger.Error("Kullanıcı bulunamadı: {0}", dto.Email);
+                response.Errors.Add("Kullanıcı bulunamadı");
             }
 
             return response;
@@ -122,6 +131,8 @@ namespace VetProManager.Service.Modules.Security {
             return jwt;
         }
 
+
+        #region ServiceBaseMethods
         Task<AuthTokenDto> IService<AuthTokenDto>.GetByIdAsync(long Id) {
             throw new NotImplementedException();
         }
@@ -161,5 +172,7 @@ namespace VetProManager.Service.Modules.Security {
         public Task<bool> AnyAsync(Expression<Func<AuthTokenDto, bool>> predicate) {
             throw new NotImplementedException();
         }
+        #endregion
+
     }
 }

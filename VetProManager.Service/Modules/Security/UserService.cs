@@ -8,6 +8,7 @@ using VetProManager.DAL.UnitOfWorks;
 using VetProManager.Service.BaseService;
 using VetProManager.Service.Contract.Modules.Security;
 using VetProManager.Service.DTOs;
+using VetProManager.Service.Responses;
 using VetProManager.Service.Validations;
 
 namespace VetProManager.Service.Modules.Security {
@@ -64,34 +65,16 @@ namespace VetProManager.Service.Modules.Security {
         }
 
         public async Task AddAsync(UserDto dto) {
-            //TODO: burası aslında kullanılmayacak. AuthToken yeterli.
-            //TODO: ayrıca update dışında gerek de yok şimdilik
-            //var response = new ServiceResponse();
+            var response = new ServiceResponse();
 
-            //try
-            //{
-            //    var validationResult = await _validator.ValidateAsync(dto);
-
-            //    if (!validationResult.IsValid) {
-            //        _logger.Error("Validasyon hatası. {0}", validationResult.Errors);
-            //        //TODO: throw yapılmadan olacak
-            //        response.Errors.Add(validationResult.Errors.ToString());
-            //        throw new ValidationException(validationResult.Errors);
-            //    }
-
-            //    var user = _mapper.Map<User>(dto);
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    response.Errors.Add(ex.Message);
-            //}
-
-            //await _repository.AddAsync(user);
-
-            //await _unitOfWork.CommitAsync();
-
-            throw new NotImplementedException();
+            try {
+                var user = _mapper.Map<User>(dto);
+                await _repository.AddAsync(user);
+                //Register olurken commit yapılıyorken sorun olmasın diye kaldırdım ama denemedim.
+            }
+            catch (Exception ex) {
+                response.Errors.Add(ex.Message);
+            }
         }
 
         public async Task AddRangeAsync(IEnumerable<UserDto> entities) {
