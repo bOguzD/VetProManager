@@ -33,7 +33,7 @@ namespace VetProManager.API.Controllers.Modules.Shared {
         }
 
         [HttpPost]
-        public async Task<IActionResult> InsertSpecies([FromBody] SpeciesDTO dto) {
+        public async Task<IActionResult> InsertSpecies([FromBody] SpeciesDto dto) {
             var response = new ServiceResponse();
             await _speciesService.AddAsync(dto);
 

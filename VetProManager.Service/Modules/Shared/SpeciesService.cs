@@ -28,12 +28,12 @@ namespace VetProManager.Service.Modules.Shared {
             _logger = logger;
         }
 
-        public async Task<SpeciesDTO?> GetByIdAsync(long id)
+        public async Task<SpeciesDto?> GetByIdAsync(long id)
         {
             try
             {
                 var species = await _repository.GetByIdAsync(id);
-                var speciesDTO = _mapper.Map<SpeciesDTO>(species);
+                var speciesDTO = _mapper.Map<SpeciesDto>(species);
 
                 _logger.Information("Tür bilgisi alındı. {0}", speciesDTO.Code);
 
@@ -47,13 +47,13 @@ namespace VetProManager.Service.Modules.Shared {
 
         }
 
-        public async Task<IEnumerable<SpeciesDTO>> GetAllAsync()
+        public async Task<IEnumerable<SpeciesDto>> GetAllAsync()
         {
             var speciesList = await _repository.GetAllAsync();
 
-            var speciesListDTO = new List<SpeciesDTO>();
+            var speciesListDTO = new List<SpeciesDto>();
             if (speciesList.Any()) {
-                speciesListDTO = _mapper.Map<IEnumerable<SpeciesDTO>>(speciesList).ToList();
+                speciesListDTO = _mapper.Map<IEnumerable<SpeciesDto>>(speciesList).ToList();
             }
 
             _logger.Information("Tür bilgileri çekildi.");
@@ -61,17 +61,17 @@ namespace VetProManager.Service.Modules.Shared {
             return speciesListDTO;
         }
 
-        public IQueryable<SpeciesDTO> GetAllAsQueryable()
+        public IQueryable<SpeciesDto> GetAllAsQueryable()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<SpeciesDTO>> Where(Expression<Func<SpeciesDTO, bool>> predicate)
+        public async Task<IEnumerable<SpeciesDto>> Where(Expression<Func<SpeciesDto, bool>> predicate)
         {
             throw new NotImplementedException();
         }
 
-        public async Task AddAsync(SpeciesDTO entity)
+        public async Task AddAsync(SpeciesDto entity)
         {
             //TODO: response yapısı generic olarak her yerde gösterilecek
             var response = new ServiceResponse();
@@ -99,27 +99,27 @@ namespace VetProManager.Service.Modules.Shared {
            // return response;
         }
 
-        public async Task AddRangeAsync(IEnumerable<SpeciesDTO> entities)
+        public async Task AddRangeAsync(IEnumerable<SpeciesDto> entities)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(SpeciesDTO entity)
+        public void Update(SpeciesDto entity)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(SpeciesDTO entity)
+        public void Delete(SpeciesDto entity)
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteRange(IEnumerable<SpeciesDTO> entities)
+        public void DeleteRange(IEnumerable<SpeciesDto> entities)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> AnyAsync(Expression<Func<SpeciesDTO, bool>> predicate)
+        public async Task<bool> AnyAsync(Expression<Func<SpeciesDto, bool>> predicate)
         {
             throw new NotImplementedException();
         }

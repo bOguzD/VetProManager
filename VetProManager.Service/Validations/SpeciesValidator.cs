@@ -2,7 +2,7 @@
 using VetProManager.Service.DTOs;
 
 namespace VetProManager.Service.Validations {
-    public class SpeciesValidator: AbstractValidator<SpeciesDTO> {
+    public class SpeciesValidator: AbstractValidator<SpeciesDto> {
         public SpeciesValidator()
         {
             //TODO: Code alanının unique olması gerekiyor eklenecek.

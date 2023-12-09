@@ -23,60 +23,60 @@ namespace VetProManager.Service.Modules.Security {
             _logger = logger;
         }
 
-        public async Task<UserDTO> GetByIdAsync(long id) {
+        public async Task<UserDto> GetByIdAsync(long id) {
             var user = await _repository.GetByIdAsync(id);
-            var userDTO = _mapper.Map<UserDTO>(user);
+            var userDTO = _mapper.Map<UserDto>(user);
 
             _logger.Information("Kullanıcı bilgisi alındı.  mail adresi: {0}", userDTO.Email);
             return userDTO;
         }
 
-        public async Task<UserDTO> GetUserByEmail(string email) {
+        public async Task<UserDto> GetUserByEmail(string email) {
             var user = _repository.Where(x => x.Email == email).Result.First();
             if (user == null) {
                 _logger.Warning("Kullanıcı bulunamadı. Email adresi {0}", email);
                 return null;
             }
 
-            var userDTO = _mapper.Map<UserDTO>(user);
+            var userDTO = _mapper.Map<UserDto>(user);
 
             _logger.Information("Kullanıcı bilgisi alındı.  mail adresi: {0}", userDTO.Email);
             return userDTO;
         }
 
-        public async Task<IEnumerable<UserDTO>> GetAllAsync() {
+        public async Task<IEnumerable<UserDto>> GetAllAsync() {
             throw new NotImplementedException();
         }
 
-        public IQueryable<UserDTO> GetAllAsQueryable() {
+        public IQueryable<UserDto> GetAllAsQueryable() {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<UserDTO>> Where(Expression<Func<UserDTO, bool>> predicate) {
+        public async Task<IEnumerable<UserDto>> Where(Expression<Func<UserDto, bool>> predicate) {
             throw new NotImplementedException();
         }
 
-        public async Task AddAsync(UserDTO entity) {
+        public async Task AddAsync(UserDto entity) {
             throw new NotImplementedException();
         }
 
-        public async Task AddRangeAsync(IEnumerable<UserDTO> entities) {
+        public async Task AddRangeAsync(IEnumerable<UserDto> entities) {
             throw new NotImplementedException();
         }
 
-        public void Update(UserDTO entity) {
+        public void Update(UserDto entity) {
             throw new NotImplementedException();
         }
 
-        public void Delete(UserDTO entity) {
+        public void Delete(UserDto entity) {
             throw new NotImplementedException();
         }
 
-        public void DeleteRange(IEnumerable<UserDTO> entities) {
+        public void DeleteRange(IEnumerable<UserDto> entities) {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> AnyAsync(Expression<Func<UserDTO, bool>> predicate) {
+        public async Task<bool> AnyAsync(Expression<Func<UserDto, bool>> predicate) {
             throw new NotImplementedException();
         }
     }

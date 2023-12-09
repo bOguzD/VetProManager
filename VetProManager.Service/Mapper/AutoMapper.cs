@@ -6,8 +6,8 @@ using VetProManager.Service.DTOs;
 namespace VetProManager.Service.Mapper {
     public class AutoMapper : Profile {
         public AutoMapper() {
-            CreateMap<Species, SpeciesDTO>().ReverseMap();
-            CreateMap<User, UserDTO>().ReverseMap();
+            CreateMap<Species, SpeciesDto>().ReverseMap();
+            CreateMap<User, UserDto>().ReverseMap();
         }
     }
 }
