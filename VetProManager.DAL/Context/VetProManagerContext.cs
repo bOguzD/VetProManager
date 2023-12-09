@@ -9,7 +9,7 @@ using VetProManager.DAL.Modules.Shared;
 using VetProManager.DAL.Modules.VetManager;
 
 namespace VetProManager.DAL.Context {
-    public class VetProManagerContext : IdentityDbContext<User> {
+    public class VetProManagerContext : DbContext {
         public VetProManagerContext() { }
 
         public VetProManagerContext(DbContextOptions<VetProManagerContext> options) : base(options) { }

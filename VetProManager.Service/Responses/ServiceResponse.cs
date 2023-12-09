@@ -8,7 +8,7 @@
         public string? Message { get; set; }
         public int StatusCode { get; set; }
         public object? Data { get; set; }
-        public List<string>? Errors { get; set; }
+        public List<string> Errors { get; set; }
 
 
         public static ServiceResponse Success(int statusCode, string? message) {

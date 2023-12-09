@@ -15,10 +15,20 @@ namespace VetProManager.API.Controllers.Modules.Shared {
         }
 
         [HttpGet("{Id}")]
-        public async Task<IActionResult> GetById(long id) {
-            var response = new ServiceResponse() {
-                Data = await _speciesService.GetByIdAsync(id)
-            };
+        public async Task<IActionResult> GetById(long id)
+        {
+            //TODO: api - business katmanları try catch hangisi üstlenecek?
+            var response = new ServiceResponse();
+
+            try {
+
+                response.Data =  await _speciesService.GetByIdAsync(id);
+
+            }
+            catch (Exception ex) {
+                //TODO: loglama burada mı yoksa businessta mı tutulacak_logger.LogError(ex);
+                response.Errors.Add(ex.Message);
+            }
 
             return Ok(response);
         }
