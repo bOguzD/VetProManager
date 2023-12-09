@@ -1,12 +1,6 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Linq.Expressions;
-using System.Security.Claims;
-using System.Security.Cryptography;
+﻿using System.Linq.Expressions;
 using AutoMapper;
-using Azure;
-using FluentValidation;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using VetProManager.DAL.Contracts.BaseContracts;
 using VetProManager.DAL.Modules.Security;
@@ -14,7 +8,6 @@ using VetProManager.DAL.UnitOfWorks;
 using VetProManager.Service.BaseService;
 using VetProManager.Service.Contract.Modules.Security;
 using VetProManager.Service.DTOs;
-using VetProManager.Service.Responses;
 using VetProManager.Service.Validations;
 
 namespace VetProManager.Service.Modules.Security {

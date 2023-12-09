@@ -4,18 +4,21 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using VetProManager.DAL.Contracts.BaseContracts;
 using VetProManager.DAL.Modules.Security;
 using VetProManager.DAL.UnitOfWorks;
 using VetProManager.Service.BaseService;
+using VetProManager.Service.BaseService.Contract;
+using VetProManager.Service.Contract.Modules.Security;
 using VetProManager.Service.DTOs;
 using VetProManager.Service.Responses;
 using VetProManager.Service.Validations;
 
 namespace VetProManager.Service.Modules.Security {
-    public class AccountService : Service<AuthToken> {
+    public class AccountService : Service<AuthToken>, IAccountService {
         
         private readonly IRepository<AuthToken> _repository;
         private readonly IUnitOfWork _unitOfWork;
@@ -117,6 +120,46 @@ namespace VetProManager.Service.Modules.Security {
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
             return jwt;
+        }
+
+        Task<AuthTokenDto> IService<AuthTokenDto>.GetByIdAsync(long Id) {
+            throw new NotImplementedException();
+        }
+
+        Task<IEnumerable<AuthTokenDto>> IService<AuthTokenDto>.GetAllAsync() {
+            throw new NotImplementedException();
+        }
+
+        IQueryable<AuthTokenDto> IService<AuthTokenDto>.GetAllAsQueryable() {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<AuthTokenDto>> Where(Expression<Func<AuthTokenDto, bool>> predicate) {
+            throw new NotImplementedException();
+        }
+
+        public Task AddAsync(AuthTokenDto entity) {
+            throw new NotImplementedException();
+        }
+
+        public Task AddRangeAsync(IEnumerable<AuthTokenDto> entities) {
+            throw new NotImplementedException();
+        }
+
+        public void Update(AuthTokenDto entity) {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(AuthTokenDto entity) {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteRange(IEnumerable<AuthTokenDto> entities) {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> AnyAsync(Expression<Func<AuthTokenDto, bool>> predicate) {
+            throw new NotImplementedException();
         }
     }
 }
