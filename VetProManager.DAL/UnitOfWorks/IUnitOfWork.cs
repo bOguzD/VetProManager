@@ -12,5 +12,6 @@ namespace VetProManager.DAL.UnitOfWorks
         void Rollback();
         IRepository<TEntity> GetRepository<TEntity>() where TEntity : class;
         ICustomerRepository Customers { get; set; }
+
     }
 }

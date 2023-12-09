@@ -28,6 +28,8 @@ namespace VetProManager.DAL {
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRepository<User>,  UserRepository>();
+            services.AddScoped<IRepository<AuthToken>,  AuthTokenRepository>();
+            services.AddScoped<IRepository<UserRole>, UserRoleRepository>();
         }
     }
 }

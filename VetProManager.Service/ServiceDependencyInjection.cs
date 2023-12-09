@@ -25,6 +25,7 @@ namespace VetProManager.Service {
 
             //FluentValidation
             services.AddScoped<SpeciesValidator>();
+            services.AddScoped<UserValidator>();
             services.AddAutoMapper(typeof(Mapper.AutoMapper));
 
             services.AddScoped<CustomerService>();
