@@ -21,7 +21,7 @@ namespace VetProManager.API.Controllers.Modules.Security {
         {
             var response = new ServiceResponse();
             
-            await _userService.AddAsync(dto);
+            await _userService.RegisterAsync(dto);
 
             return Ok(response);
         }

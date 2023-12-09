@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VetProManager.DAL.Context;
 
@@ -11,9 +12,11 @@ using VetProManager.DAL.Context;
 namespace VetProManager.DAL.Migrations
 {
     [DbContext(typeof(VetProManagerContext))]
-    partial class VetProManagerContextModelSnapshot : ModelSnapshot
+    [Migration("20231209185444_newInitialize")]
+    partial class newInitialize
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -332,42 +335,6 @@ namespace VetProManager.DAL.Migrations
                     b.ToTable("PetsVaccinations");
                 });
 
-            modelBuilder.Entity("VetProManager.DAL.Modules.Security.AuthToken", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("CreatedUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Token")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("UpdatedUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AuthTokens");
-                });
-
             modelBuilder.Entity("VetProManager.DAL.Modules.Security.User", b =>
                 {
                     b.Property<long>("Id")
@@ -450,7 +417,7 @@ namespace VetProManager.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRole");
                 });
 
             modelBuilder.Entity("VetProManager.DAL.Modules.Shared.Breed", b =>
@@ -878,16 +845,6 @@ namespace VetProManager.DAL.Migrations
                     b.Navigation("VaccinationType");
 
                     b.Navigation("Vaccine");
-                });
-
-            modelBuilder.Entity("VetProManager.DAL.Modules.Security.AuthToken", b =>
-                {
-                    b.HasOne("VetProManager.DAL.Modules.Security.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("VetProManager.DAL.Modules.Security.UserRole", b =>

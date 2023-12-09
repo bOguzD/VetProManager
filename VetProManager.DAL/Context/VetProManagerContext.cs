@@ -62,6 +62,8 @@ namespace VetProManager.DAL.Context {
 
 
         public DbSet<User> Users { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<AuthToken> AuthTokens { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Examination> Examinations { get; set; }
         public DbSet<Customer> Customers { get; set; }

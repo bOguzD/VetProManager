@@ -105,6 +105,30 @@ namespace VetProManager.Service.Modules.Security {
         }
 
 
+        public async Task<ServiceResponse> RegisterAsync(UserDto dto)
+        {
+            var response = new ServiceResponse();
+
+            try
+            {
+                CreatePasswordHash(dto.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+                var user = _mapper.Map<User>(dto);
+
+                user.PasswordHash = passwordHash;
+                user.PasswordSalt = passwordSalt;
+
+                await _repository.AddAsync(user);
+
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                response.Errors.Add(ex.Message);
+            }
+
+            return response;
+        }
 
         //TODO: Bu kısım ayrı bir service'e taşınabilir
         public async Task<ServiceResponse> LoginAsync(UserDto dto)
