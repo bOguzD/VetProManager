@@ -96,7 +96,7 @@ namespace VetProManager.Service.Modules.Shared {
                 response.IsSuccess = false;
             }
 
-           // return response;
+           //return response;
         }
 
         public async Task AddRangeAsync(IEnumerable<SpeciesDto> entities)

@@ -1,10 +1,9 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
-using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore.Query.Internal;
+using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -14,6 +13,8 @@ using VetProManager.DAL.UnitOfWorks;
 using VetProManager.Service.BaseService;
 using VetProManager.Service.Contract.Modules.Security;
 using VetProManager.Service.DTOs;
+using VetProManager.Service.Responses;
+using VetProManager.Service.Validations;
 
 namespace VetProManager.Service.Modules.Security {
     public class UserService : Service<User>, IUserService {
@@ -23,14 +24,16 @@ namespace VetProManager.Service.Modules.Security {
         private readonly IRepository<User> _repository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
+        private readonly UserValidator _validator;
 
         public UserService(IUnitOfWork unitOfWork, IRepository<User> repository,
-            ILogger logger, IMapper mapper, IConfiguration configuration) : base(unitOfWork, repository, logger) {
+            ILogger logger, IMapper mapper, IConfiguration configuration, UserValidator validator) : base(unitOfWork, repository, logger) {
             _unitOfWork = unitOfWork;
             _repository = repository;
             _mapper = mapper;
             _logger = logger;
             _configuration = configuration;
+            _validator = validator;
         }
 
         public async Task<UserDto> GetByIdAsync(long id) {
@@ -104,9 +107,38 @@ namespace VetProManager.Service.Modules.Security {
 
 
         //TODO: Bu kısım ayrı bir service'e taşınabilir
-        public async Task LoginAsync(UserDto dto)
+        public async Task<ServiceResponse> LoginAsync(UserDto dto)
         {
-            //TODO: validation işlemleri burada yapılmayacak
+            var response = new ServiceResponse();
+
+            try
+            {
+                var validationResult = await _validator.ValidateAsync(dto);
+
+                if (!validationResult.IsValid)
+                {
+                    _logger.Error("Validasyon hatası. {0}", validationResult.Errors);
+                    //TODO: throw yapılmadan olacak
+                    response.Errors.Add(validationResult.Errors.ToString());
+                    throw new ValidationException(validationResult.Errors);
+                }
+
+                var user = _repository.Where(x => x.Email == dto.Email);
+
+                if (user == null)
+                {
+                    _logger.Error("Kullanıcı bulunamadı: {0}", dto.Email);
+                    response.Errors.Add("Kullanıcı bulunamadı");
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                response.Errors.Add(ex.Message);
+            }
+           
+            return response;
         }
 
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
