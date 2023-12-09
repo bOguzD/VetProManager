@@ -5,6 +5,5 @@ using VetProManager.Service.Responses;
 namespace VetProManager.Service.Contract.Modules.Security {
     public interface IUserService : IService<UserDto> {
         public Task<UserDto> GetUserByEmail(string email);
-        public Task<ServiceResponse> LoginAsync(UserDto dto);
     }
 }

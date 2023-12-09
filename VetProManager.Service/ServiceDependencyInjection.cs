@@ -7,7 +7,6 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Events;
 using VetProManager.DAL;
-using VetProManager.Service.Contract.Modules.Security;
 using VetProManager.Service.Modules.CRM;
 using VetProManager.Service.Modules.Security;
 using VetProManager.Service.Modules.Shared;
@@ -26,11 +25,13 @@ namespace VetProManager.Service {
             //FluentValidation
             services.AddScoped<SpeciesValidator>();
             services.AddScoped<UserValidator>();
+            services.AddScoped<AuthTokenValidator>();
             services.AddAutoMapper(typeof(Mapper.AutoMapper));
 
             services.AddScoped<CustomerService>();
             services.AddScoped<SpeciesService>();
             services.AddScoped<UserService>();
+            services.AddScoped<AccountService>();
 
             services.AddSingleton(provider => Log.Logger);
 

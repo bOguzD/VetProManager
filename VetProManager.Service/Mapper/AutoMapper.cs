@@ -8,6 +8,7 @@ namespace VetProManager.Service.Mapper {
         public AutoMapper() {
             CreateMap<Species, SpeciesDto>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<AuthToken, AuthTokenDto>().ReverseMap();
         }
     }
 }

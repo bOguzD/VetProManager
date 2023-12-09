@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using AutoMapper;
+using Azure;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -70,16 +71,32 @@ namespace VetProManager.Service.Modules.Security {
         }
 
         public async Task AddAsync(UserDto dto) {
-            CreatePasswordHash(dto.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            //TODO: burası aslında kullanılmayacak. AuthToken yeterli.
+            //TODO: ayrıca update dışında gerek de yok şimdilik
+            //var response = new ServiceResponse();
 
-            var user = _mapper.Map<User>(dto);
+            //try
+            //{
+            //    var validationResult = await _validator.ValidateAsync(dto);
 
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+            //    if (!validationResult.IsValid) {
+            //        _logger.Error("Validasyon hatası. {0}", validationResult.Errors);
+            //        //TODO: throw yapılmadan olacak
+            //        response.Errors.Add(validationResult.Errors.ToString());
+            //        throw new ValidationException(validationResult.Errors);
+            //    }
 
-            await _repository.AddAsync(user);
+            //    var user = _mapper.Map<User>(dto);
 
-            await _unitOfWork.CommitAsync();
+            //}
+            //catch (Exception ex)
+            //{
+            //    response.Errors.Add(ex.Message);
+            //}
+
+            //await _repository.AddAsync(user);
+
+            //await _unitOfWork.CommitAsync();
 
             throw new NotImplementedException();
         }
@@ -105,101 +122,8 @@ namespace VetProManager.Service.Modules.Security {
         }
 
 
-        public async Task<ServiceResponse> RegisterAsync(UserDto dto)
-        {
-            var response = new ServiceResponse();
+        
 
-            try
-            {
-                CreatePasswordHash(dto.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-                var user = _mapper.Map<User>(dto);
-
-                user.PasswordHash = passwordHash;
-                user.PasswordSalt = passwordSalt;
-
-                await _repository.AddAsync(user);
-
-                await _unitOfWork.CommitAsync();
-            }
-            catch (Exception ex)
-            {
-                response.Errors.Add(ex.Message);
-            }
-
-            return response;
-        }
-
-        //TODO: Bu kısım ayrı bir service'e taşınabilir
-        public async Task<ServiceResponse> LoginAsync(UserDto dto)
-        {
-            var response = new ServiceResponse();
-
-            try
-            {
-                var validationResult = await _validator.ValidateAsync(dto);
-
-                if (!validationResult.IsValid)
-                {
-                    _logger.Error("Validasyon hatası. {0}", validationResult.Errors);
-                    //TODO: throw yapılmadan olacak
-                    response.Errors.Add(validationResult.Errors.ToString());
-                    throw new ValidationException(validationResult.Errors);
-                }
-
-                var user = _repository.Where(x => x.Email == dto.Email);
-
-                if (user == null)
-                {
-                    _logger.Error("Kullanıcı bulunamadı: {0}", dto.Email);
-                    response.Errors.Add("Kullanıcı bulunamadı");
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                response.Errors.Add(ex.Message);
-            }
-           
-            return response;
-        }
-
-        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using var hmac = new HMACSHA512();
-            passwordSalt = hmac.Key;
-            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-        }
-
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-        {
-            using var hmac = new HMACSHA512(passwordSalt);
-
-            var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            return computedHash.SequenceEqual(passwordHash);
-        }
-
-        private string CreateToken(UserDto dto)
-        {
-            List<Claim> claims = new()
-            {
-                new Claim(ClaimTypes.Name, dto.Email)
-            };
-
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-                _configuration.GetSection("Jwt:SecretKey").Value));
-
-            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires:DateTime.UtcNow.AddHours(5),
-                signingCredentials: cred);
-
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return jwt;
-        }
+       
     }
 }
