@@ -32,48 +32,16 @@ namespace VetProManager.Service.Modules.Security {
         private readonly IUserService _userService;
 
         public AccountService(IUnitOfWork unitOfWork, IRepository<AuthToken> repository,
-            ILogger logger, IMapper mapper, AuthTokenValidator validator, IUserService service) : base(unitOfWork, repository, logger) {
+            ILogger logger, IMapper mapper, AuthTokenValidator validator, IUserService service, IConfiguration configuration) : base(unitOfWork, repository, logger) {
             _unitOfWork = unitOfWork;
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
             _validator = validator;
             _userService = service;
+            _configuration = configuration;
         }
 
-        public async Task<ServiceResponse> RegisterAsync(AuthTokenDto dto) {
-            var response = new ServiceResponse();
-
-            var validationResult = await _validator.ValidateAsync(dto);
-
-            if (!validationResult.IsValid) {
-                _logger.Error("Validasyon hatası. {0}", validationResult.Errors);
-                //TODO: throw yapılmadan olacak
-                response.Errors.Add(validationResult.Errors.ToString());
-                throw new ValidationException(validationResult.Errors);
-            }
-
-            CreatePasswordHash(dto.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-            var userDto = new UserDto()
-            {
-                Email = dto.Email,
-                PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt
-            };
-
-            dto.Token = GenerateToken(dto);
-            var authToken = _mapper.Map<AuthToken>(dto);
-
-            await _repository.AddAsync(authToken);
-            await _userService.AddAsync(userDto);
-
-            await _unitOfWork.CommitAsync();
-
-            return response;
-        }
-
-        //TODO: Bu kısım ayrı bir service'e taşınabilir
         public async Task<ServiceResponse> LoginAsync(AuthTokenDto dto) {
             var response = new ServiceResponse();
 
@@ -97,12 +65,6 @@ namespace VetProManager.Service.Modules.Security {
             return response;
         }
 
-        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt) {
-            using var hmac = new HMACSHA512();
-            passwordSalt = hmac.Key;
-            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-        }
-
         private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt) {
             using var hmac = new HMACSHA512(passwordSalt);
 
@@ -110,7 +72,7 @@ namespace VetProManager.Service.Modules.Security {
             return computedHash.SequenceEqual(passwordHash);
         }
 
-        private string GenerateToken(AuthTokenDto dto) {
+        private string GenerateToken(UserDto dto) {
             List<Claim> claims = new()
             {
                 new Claim(ClaimTypes.Name, dto.Email)
@@ -130,7 +92,6 @@ namespace VetProManager.Service.Modules.Security {
 
             return jwt;
         }
-
 
         #region ServiceBaseMethods
         Task<AuthTokenDto> IService<AuthTokenDto>.GetByIdAsync(long Id) {

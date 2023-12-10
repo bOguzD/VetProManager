@@ -32,7 +32,7 @@ namespace VetProManager.Service {
             services.AddScoped<CustomerService>();
             services.AddScoped<SpeciesService>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<AccountService>();
+            services.AddScoped<IAccountService, AccountService>();
 
 
 

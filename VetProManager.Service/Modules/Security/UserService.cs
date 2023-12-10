@@ -1,5 +1,7 @@
 ﻿using System.Linq.Expressions;
+using System.Security.Cryptography;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using VetProManager.DAL.Contracts.BaseContracts;
@@ -18,16 +20,14 @@ namespace VetProManager.Service.Modules.Security {
         private readonly ILogger _logger;
         private readonly IRepository<User> _repository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IConfiguration _configuration;
         private readonly UserValidator _validator;
 
         public UserService(IUnitOfWork unitOfWork, IRepository<User> repository,
-            ILogger logger, IMapper mapper, IConfiguration configuration, UserValidator validator) : base(unitOfWork, repository, logger) {
+            ILogger logger, IMapper mapper, UserValidator validator) : base(unitOfWork, repository, logger) {
             _unitOfWork = unitOfWork;
             _repository = repository;
             _mapper = mapper;
             _logger = logger;
-            _configuration = configuration;
             _validator = validator;
         }
 
@@ -52,6 +52,25 @@ namespace VetProManager.Service.Modules.Security {
             return userDTO;
         }
 
+        public async Task<ServiceResponse> Insert(UserDto dto)
+        {
+            var response = new ServiceResponse();
+
+            try {
+                var user = _mapper.Map<User>(dto);
+                await _repository.AddAsync(user);
+
+                await _unitOfWork.CommitAsync();
+
+                response.Data = user;
+            }
+            catch (Exception ex) {
+                response.Errors.Add(ex.Message);
+            }
+
+            return response;
+        }
+
         public async Task<IEnumerable<UserDto>> GetAllAsync() {
             throw new NotImplementedException();
         }
@@ -65,16 +84,24 @@ namespace VetProManager.Service.Modules.Security {
         }
 
         public async Task AddAsync(UserDto dto) {
-            var response = new ServiceResponse();
+            var validationResult = await _validator.ValidateAsync(dto);
 
-            try {
-                var user = _mapper.Map<User>(dto);
-                await _repository.AddAsync(user);
-                //Register olurken commit yapılıyorken sorun olmasın diye kaldırdım ama denemedim.
+            if (!validationResult.IsValid) {
+                _logger.Error("Validasyon hatası. {0}", validationResult.Errors);
+                //TODO: throw yapılmadan olacak
+                throw new ValidationException(validationResult.Errors);
             }
-            catch (Exception ex) {
-                response.Errors.Add(ex.Message);
-            }
+
+            CreatePasswordHash(dto.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            var user = _mapper.Map<User>(dto);
+
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+
+            await _repository.AddAsync(user);
+            await _unitOfWork.CommitAsync();
+
         }
 
         public async Task AddRangeAsync(IEnumerable<UserDto> entities) {
@@ -97,9 +124,10 @@ namespace VetProManager.Service.Modules.Security {
             throw new NotImplementedException();
         }
 
-
-        
-
-       
+        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt) {
+            using var hmac = new HMACSHA512();
+            passwordSalt = hmac.Key;
+            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+        }
     }
 }

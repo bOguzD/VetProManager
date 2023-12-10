@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using VetProManager.API.Models;
+using VetProManager.Service.Contract.Modules.Security;
 using VetProManager.Service.DTOs;
 using VetProManager.Service.Modules.Security;
 using VetProManager.Service.Responses;
@@ -9,10 +10,12 @@ namespace VetProManager.API.Controllers.Modules.Security {
     [ApiController]
     public class AccountController : ControllerBase {
 
-        private readonly AccountService _accountService;
+        private readonly IAccountService _accountService;
+        private readonly IUserService _userService;
 
-        public AccountController(AccountService accountService) {
+        public AccountController(IAccountService accountService, IUserService userService) {
             _accountService = accountService;
+            _userService = userService;
         }
 
         [HttpPost("register")]
@@ -20,15 +23,13 @@ namespace VetProManager.API.Controllers.Modules.Security {
             var response = new ServiceResponse();
 
             try {
-                var dto = new AuthTokenDto {
+                var dto = new UserDto() {
                     Email = model.Email,
                     Password = model.Password
                 };
 
-               response = await _accountService.RegisterAsync(dto);
+               await _userService.AddAsync(dto);
 
-               if (!response.IsSuccess)
-                   return BadRequest(response);
             }
             catch (Exception ex) {
                 response.Errors.Add(ex.Message);
