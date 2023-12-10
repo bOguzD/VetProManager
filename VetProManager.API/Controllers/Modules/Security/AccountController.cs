@@ -2,6 +2,7 @@
 using VetProManager.API.Models;
 using VetProManager.Service.Contract.Modules.Security;
 using VetProManager.Service.DTOs;
+using VetProManager.Service.Helpers.Exceptions;
 using VetProManager.Service.Modules.Security;
 using VetProManager.Service.Responses;
 
@@ -32,7 +33,8 @@ namespace VetProManager.API.Controllers.Modules.Security {
 
             }
             catch (Exception ex) {
-                response.Errors.Add(ex.Message);
+                response.Errors.Add(ex.InnerException?.Message); 
+                throw new VetProException(ex.Message, ex.InnerException);
             }
 
             return Ok(response);

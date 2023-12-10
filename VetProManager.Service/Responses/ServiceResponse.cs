@@ -1,7 +1,11 @@
-﻿namespace VetProManager.Service.Responses {
+﻿using System.Net.NetworkInformation;
+using System.Runtime.CompilerServices;
+
+namespace VetProManager.Service.Responses {
     public class ServiceResponse {
         public ServiceResponse() {
             Errors = new List<string>();
+            IsSuccess = true;
         }
 
         public bool IsSuccess { get; set; }
@@ -28,7 +32,7 @@
             return CreateServiceResponse(false, null, statusCode, null, message);
         }
 
-        private static string CreateErrorMessage(string? message) {
+        private static string CreateErrorMessage(string message) {
             return string.IsNullOrEmpty(message)
                 ? "Unknown Error"
                 : message;

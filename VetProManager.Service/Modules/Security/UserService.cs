@@ -10,6 +10,7 @@ using VetProManager.DAL.UnitOfWorks;
 using VetProManager.Service.BaseService;
 using VetProManager.Service.Contract.Modules.Security;
 using VetProManager.Service.DTOs;
+using VetProManager.Service.Helpers.Exceptions;
 using VetProManager.Service.Responses;
 using VetProManager.Service.Validations;
 
@@ -89,7 +90,7 @@ namespace VetProManager.Service.Modules.Security {
             if (!validationResult.IsValid) {
                 _logger.Error("Validasyon hatası. {0}", validationResult.Errors);
                 //TODO: throw yapılmadan olacak
-                throw new ValidationException(validationResult.Errors);
+                throw new VetProException("Validasyon hatası: ", validationResult );
             }
 
             CreatePasswordHash(dto.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -101,7 +102,6 @@ namespace VetProManager.Service.Modules.Security {
 
             await _repository.AddAsync(user);
             await _unitOfWork.CommitAsync();
-
         }
 
         public async Task AddRangeAsync(IEnumerable<UserDto> entities) {
