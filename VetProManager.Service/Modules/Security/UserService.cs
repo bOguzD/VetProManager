@@ -53,6 +53,17 @@ namespace VetProManager.Service.Modules.Security {
             return userDTO;
         }
 
+        public async Task<User> GetUserEntityByEmail(string email)
+        {
+            var user = await _repository.Where(x => x.Email == email);
+            if (user == null) {
+                _logger.Warning("Kullanıcı bulunamadı. Email adresi {0}", email);
+                return null;
+            }
+
+            return user.FirstOrDefault();
+        }
+
         public async Task<ServiceResponse> Insert(UserDto dto)
         {
             var response = new ServiceResponse();
