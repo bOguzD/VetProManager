@@ -33,7 +33,8 @@ namespace VetProManager.Service.Modules.Security {
         private readonly IUserService _userService;
 
         public AccountService(IUnitOfWork unitOfWork, IRepository<AuthToken> repository,
-            ILogger logger, IMapper mapper, AuthTokenValidator validator, IUserService service, IConfiguration configuration) : base(unitOfWork, repository, logger) {
+            ILogger logger, IMapper mapper, AuthTokenValidator validator, IUserService service,
+            IConfiguration configuration) : base(unitOfWork, repository, logger) {
             _unitOfWork = unitOfWork;
             _repository = repository;
             _logger = logger;
@@ -73,14 +74,15 @@ namespace VetProManager.Service.Modules.Security {
 
             if (confirmPassword)
             {
-                var token = GenerateToken(userDto);
-                var authTokenDto = new AuthTokenDto()
-                {
-                    Token = token,
+                var authTokenDto = new AuthTokenDto() {
                     ExpirationDate = DateTime.Now.AddHours(5),
-                    Email = userDto.Email
+                    Email = userDto.Email,
+                    //Role = userDto.Role
                 };
 
+                var token = GenerateToken(authTokenDto);
+
+                authTokenDto.Token = token;
                 authTokenDto.User = await _userService.GetUserEntityByEmail(userDto.Email);
 
                 var authToken = _mapper.Map<AuthToken>(authTokenDto);
@@ -141,10 +143,12 @@ namespace VetProManager.Service.Modules.Security {
             return computedHash.SequenceEqual(passwordHash);
         }
 
-        private string GenerateToken(UserDto dto) {
+        private string GenerateToken(AuthTokenDto dto) {
             List<Claim> claims = new()
             {
-                new Claim(ClaimTypes.Name, dto.Email)
+                new Claim(ClaimTypes.NameIdentifier, dto.Email),
+                //new Claim(ClaimTypes.Role, dto.Role),
+                new Claim(ClaimTypes.Expiration, dto.ExpirationDate.ToLongDateString())
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:SecretKey").Value));
@@ -160,6 +164,9 @@ namespace VetProManager.Service.Modules.Security {
 
             return jwt;
         }
+
+
+
 
         #region ServiceBaseMethods
         Task<AuthTokenDto> IService<AuthTokenDto>.GetByIdAsync(long Id) {

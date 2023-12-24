@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using VetProManager.API.Models;
 using VetProManager.Service.Contract.Modules.Security;
 using VetProManager.Service.DTOs;

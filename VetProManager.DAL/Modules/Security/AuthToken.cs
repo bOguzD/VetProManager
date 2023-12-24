@@ -5,5 +5,6 @@ namespace VetProManager.DAL.Modules.Security {
         public DateTime ExpirationDate { get; set; }
         public string Token { get; set; }
         public virtual User User { get; set; }
+        //public string Role { get; set; }
     }
 }
