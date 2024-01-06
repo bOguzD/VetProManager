@@ -74,19 +74,31 @@ namespace VetProManager.Service.Modules.Security {
 
             if (confirmPassword)
             {
-                var authTokenDto = new AuthTokenDto() {
-                    ExpirationDate = DateTime.Now.AddHours(5),
-                    Email = userDto.Email,
-                    //Role = userDto.Role
-                };
+                var existToken = _repository.Where(x => x.User.Email == user.Email).Result.FirstOrDefault();
 
-                var token = GenerateToken(authTokenDto);
+                //Eğer mevcut token bilgisi varsa yeni token oluşturmuyor
+                if (existToken is not null)
+                {
+                    existToken.ExpirationDate = DateTime.UtcNow.AddHours(5);
+                    _repository.Update(existToken);
+                }
+                else
+                {
+                    var authTokenDto = new AuthTokenDto() {
+                        ExpirationDate = DateTime.Now.AddHours(5),
+                        Email = userDto.Email,
+                        //Role = userDto.Role
+                    };
 
-                authTokenDto.Token = token;
-                authTokenDto.User = await _userService.GetUserEntityByEmail(userDto.Email);
+                    var token = GenerateToken(authTokenDto);
 
-                var authToken = _mapper.Map<AuthToken>(authTokenDto);
-                await _repository.AddAsync(authToken);
+                    authTokenDto.Token = token;
+                    authTokenDto.User = await _userService.GetUserEntityByEmail(userDto.Email);
+
+                    var authToken = _mapper.Map<AuthToken>(authTokenDto);
+                    await _repository.AddAsync(authToken);
+                }
+
                 await _unitOfWork.CommitAsync();
             }
         }
@@ -148,7 +160,9 @@ namespace VetProManager.Service.Modules.Security {
             {
                 new Claim(ClaimTypes.NameIdentifier, dto.Email),
                 //new Claim(ClaimTypes.Role, dto.Role),
-                new Claim(ClaimTypes.Expiration, dto.ExpirationDate.ToLongDateString())
+                new Claim(ClaimTypes.Name,dto.Email),
+                new Claim(ClaimTypes.Expiration, dto.ExpirationDate.ToLongDateString()),
+                new Claim("unique_Id", Guid.NewGuid().ToString())
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:SecretKey").Value));
@@ -156,6 +170,8 @@ namespace VetProManager.Service.Modules.Security {
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(5),
                 signingCredentials: cred);

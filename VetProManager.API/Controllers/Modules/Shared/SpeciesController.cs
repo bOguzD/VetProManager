@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using VetProManager.Service.DTOs;
 using VetProManager.Service.Modules.Shared;
 using VetProManager.Service.Responses;
 
 namespace VetProManager.API.Controllers.Modules.Shared {
+    [Authorize]
     [ApiController]
     [Route("api/species")]
     public class SpeciesController : ControllerBase {
