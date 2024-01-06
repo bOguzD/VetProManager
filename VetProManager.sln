@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VetProManager.Core", "VetPr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VetProManager.DAL", "VetProManager.DAL\VetProManager.DAL.csproj", "{DD67D023-999B-4B07-B072-6D68439E8BF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VetProManager.Service", "VetProManager.Service\VetProManager.Service.csproj", "{9FFE8F55-017F-4C07-AE20-5920201F9F3F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VetProManager.Service", "VetProManager.Service\VetProManager.Service.csproj", "{9FFE8F55-017F-4C07-AE20-5920201F9F3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VetProManager.API", "VetProManager.API\VetProManager.API.csproj", "{E446FB1D-5A57-46C7-B5C9-C4FFDFE18612}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VetProManager.API", "VetProManager.API\VetProManager.API.csproj", "{E446FB1D-5A57-46C7-B5C9-C4FFDFE18612}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VetProManager.WebUI", "VetProManager.WebUI\VetProManager.WebUI.csproj", "{847E3767-CF4B-41EA-ADA0-D1BF8CC6D1F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{E446FB1D-5A57-46C7-B5C9-C4FFDFE18612}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E446FB1D-5A57-46C7-B5C9-C4FFDFE18612}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E446FB1D-5A57-46C7-B5C9-C4FFDFE18612}.Release|Any CPU.Build.0 = Release|Any CPU
+		{847E3767-CF4B-41EA-ADA0-D1BF8CC6D1F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{847E3767-CF4B-41EA-ADA0-D1BF8CC6D1F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{847E3767-CF4B-41EA-ADA0-D1BF8CC6D1F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{847E3767-CF4B-41EA-ADA0-D1BF8CC6D1F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -62,8 +62,7 @@ namespace VetProManager.Service.Modules.Security {
                 throw new VetProException($"Kullanıcı bulunamadı: {dto.Email}");
             }
 
-            var userDto = new UserDto()
-            {
+            var userDto = new UserDto() {
                 Email = user.Email,
                 PasswordHash = user.PasswordHash,
                 PasswordSalt = user.PasswordSalt,
@@ -72,32 +71,27 @@ namespace VetProManager.Service.Modules.Security {
 
             var confirmPassword = VerifyPasswordHash(userDto.Password, userDto.PasswordHash, userDto.PasswordSalt);
 
-            if (confirmPassword)
-            {
+            if (confirmPassword) {
                 var existToken = _repository.Where(x => x.User.Email == user.Email).Result.FirstOrDefault();
 
-                //Eğer mevcut token bilgisi varsa yeni token oluşturmuyor
-                if (existToken is not null)
-                {
-                    existToken.ExpirationDate = DateTime.UtcNow.AddHours(5);
-                    _repository.Update(existToken);
-                }
-                else
-                {
-                    var authTokenDto = new AuthTokenDto() {
-                        ExpirationDate = DateTime.Now.AddHours(5),
-                        Email = userDto.Email,
-                        //Role = userDto.Role
-                    };
+                if (existToken is not null) 
+                    _repository.Delete(existToken);
+                
 
-                    var token = GenerateToken(authTokenDto);
+                var authTokenDto = new AuthTokenDto() {
+                    ExpirationDate = DateTime.Now.AddHours(5),
+                    Email = userDto.Email,
+                    //Role = userDto.Role
+                };
 
-                    authTokenDto.Token = token;
-                    authTokenDto.User = await _userService.GetUserEntityByEmail(userDto.Email);
+                var token = GenerateToken(authTokenDto);
 
-                    var authToken = _mapper.Map<AuthToken>(authTokenDto);
-                    await _repository.AddAsync(authToken);
-                }
+                authTokenDto.Token = token;
+                authTokenDto.User = await _userService.GetUserEntityByEmail(userDto.Email);
+
+                var authToken = _mapper.Map<AuthToken>(authTokenDto);
+                await _repository.AddAsync(authToken);
+
 
                 await _unitOfWork.CommitAsync();
             }
